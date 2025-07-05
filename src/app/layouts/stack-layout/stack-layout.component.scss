@@ -1,0 +1,15 @@
+// aside {
+//     transition: all 0.3s;
+// }
+
+aside.collapsed {
+    @apply -left-60;
+}
+
+aside.expanded {
+    @apply left-0;
+}
+
+.menu-collapsed aside, .menu-collapsed main {
+    transition: all 0.3s ease-in;
+}
