@@ -1,21 +1,13 @@
-<nav class="w-48 bg-gray-100 p-4">
-  <ul class="space-y-2">
-    <li>
-      <a
-        routerLink="/home"
-        routerLinkActive="font-semibold text-blue-600"
-        class="block text-gray-700 hover:text-blue-500"
-        >Home</a
-      >
-    </li>
-    <li>
-      <a
-        routerLink="/players"
-        routerLinkActive="font-semibold text-blue-600"
-        class="block text-gray-700 hover:text-blue-500"
-        >Players</a
-      >
-    </li>
-    <!-- …other links… -->
-  </ul>
+<nav>
+    <ul class="daisy-menu daisy-rounded-box w-56 space-y-2 p-2">
+        <li>
+            <a routerLink="/home" routerLinkActive="font-semibold daisy-active text-white" class="block text-primary-content hover:no-underline">Home</a>
+        </li>
+        <li>
+            <a routerLink="/tournament" routerLinkActive="font-semibold daisy-active text-white" class="block text-primary-content hover:no-underline">Torneos</a>
+        </li>
+        <li>
+            <a routerLink="/players" routerLinkActive="font-semibold daisy-active text-white" class="block text-primary-content hover:no-underline">Jugadores</a>
+        </li>
+    </ul>
 </nav>

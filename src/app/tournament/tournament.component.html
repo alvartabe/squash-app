@@ -1,0 +1,16 @@
+<ul class="daisy-steps pb-2 border-b-2 w-full">
+    @for(item of steps; track $index) {
+    <li class="daisy-step transition-all duration-300" [class.daisy-step-primary]="$index <= currentStepIndex">
+        <a [routerLink]="[item.path]" class="text-primary-content">
+            {{ item.label }}
+        </a>
+    </li>
+    }
+</ul>
+
+<router-outlet></router-outlet>
+
+<div class="flex justify-between my-10 ">
+    <button type="button" class="daisy-btn disabled:opacity-50 disabled:cursor-not-allowed" (click)="prevStep()" [disabled]="currentStepIndex === 0">Atrás</button>
+    <button type="button" class="daisy-btn daisy-btn-neutral disabled:opacity-50 disabled:cursor-not-allowed" (click)="nextStep()" [disabled]="currentStepIndex === steps.length - 1">Siguiente</button>
+</div>

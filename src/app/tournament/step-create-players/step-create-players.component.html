@@ -1,0 +1,17 @@
+@if(loading) {
+    <div class="mt-10">
+        <app-skeleton1></app-skeleton1>
+    </div>
+} @else {
+    <div class="pt-8">
+        @for(item of players; track $index) {
+        <div class="daisy-form-control w-max">
+            <label class="daisy-label cursor-pointer justify-start">
+                <input type="checkbox" class="daisy-toggle daisy-toggle-primary" [value]="item._key" [checked]="selectedKeys.includes(item._key)" (change)="onToggle(item._key)" />
+                <span class="daisy-label-text pl-3">{{ item.fullName }}</span>
+            </label>
+        </div>
+        }
+    </div>
+}
+

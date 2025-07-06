@@ -1,1 +1,26 @@
-<p>players works!</p>
+<div class="mb-5">
+    <h1>Tabla de jugadores registrados</h1>
+</div>
+<div class="">
+    <mz-result-table [model]="results" [loading]="loading" [options]="{ hidePagination: true }">
+    <ng-template #headerTemplate>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+        </tr>
+    </ng-template>
+    <ng-template #bodyTemplate>
+        @for (item of results.items; track item) {
+        <tr>
+            <td class="w-10">
+                {{ item._key }}
+            </td>
+            <td>
+                {{ item.fullName }}
+            </td>
+        </tr>
+        }
+    </ng-template>
+</mz-result-table>
+</div>
+

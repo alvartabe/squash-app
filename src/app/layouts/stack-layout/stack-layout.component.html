@@ -1,7 +1,15 @@
-<app-header></app-header>
-<div class="flex">
-  <app-menu></app-menu>
-  <main class="flex-1 p-6 bg-gray-50">
-    <router-outlet></router-outlet>
-  </main>
+<!-- src/app/stack-layout/stack-layout.component.html -->
+<div class="flex flex-col h-screen">
+  <!-- full-width header at the top -->
+  <app-header></app-header>
+
+  <!-- remaining space split into sidebar + content -->
+  <div class="flex flex-1">
+    <!-- menu will now fill 100% of the remaining height -->
+    <app-menu class="h-full bg-base-200"></app-menu>
+
+    <main class="flex-1 p-10 overflow-auto">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
 </div>

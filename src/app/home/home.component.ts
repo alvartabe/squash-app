@@ -10,7 +10,6 @@ import { PlayerService } from '../services/player.service';
 export class HomeComponent {
 
   constructor(private service: PlayerService) {
-      this.service.getPlayers().subscribe(response => {console.log(response)})
+      this.service.getAllPlayers().subscribe(response => {console.log(response)})
   }
-
 }
