@@ -1,22 +1,35 @@
-<div *ngIf="!loading" class="grid grid-cols-3 gap-4 p-4" cdkDropListGroup>
+<div class="px-4 py-10 w-2/3 m-auto">
+    <label class="block mb-2">Número de grupos: {{ groupCount }}</label>
+    <input type="range" min="2" max="8" [value]="groupCount" class="daisy-range daisy-range-accent" step="1" (input)="onCountChange($event)" />
+    <div class="flex w-full justify-between px-2 text-xs">
+        <span>2</span>
+        <span>3</span>
+        <span>4</span>
+        <span>5</span>
+        <span>6</span>
+        <span>7</span>
+        <span>8</span>
+    </div>
+</div>
 
-    <section cdkDropList [cdkDropListData]="unassigned" class="border rounded p-2 bg-base-200" (cdkDropListDropped)="drop($event)">
+<div class="grid grid-cols-3 gap-4 p-4" cdkDropListGroup>
+    <section cdkDropList [cdkDropListData]="unassigned" class="border rounded p-2 bg-neutral-content" (cdkDropListDropped)="drop($event)">
         <h3 class="font-bold mb-2">Jugadores</h3>
         @for(player of unassigned; track $index) {
-            <div cdkDrag class="p-2 mb-1 bg-white rounded cursor-move shadow-sm">
-                {{ player.fullName }}
-            </div>
-        }
-    </section>
-
-    @for(group of groups; track $index) {
-    <section cdkDropList [cdkDropListData]="group.items" class="border rounded p-2 bg-base-200" (cdkDropListDropped)="drop($event)">
-        <h3 class="font-bold mb-2">{{ group.name }}</h3>
-        @for(player of group.items; track $index) {
         <div cdkDrag class="p-2 mb-1 bg-white rounded cursor-move shadow-sm">
             {{ player.fullName }}
         </div>
         }
     </section>
+
+    @for(group of groups; track $index) {
+        <section cdkDropList [cdkDropListData]="group.items" class="border rounded p-2 bg-base-200" (cdkDropListDropped)="drop($event)">
+            <h3 class="font-bold mb-2">{{ group.name }}</h3>
+            @for(player of group.items; track $index) {
+            <div cdkDrag class="p-2 mb-1 bg-white rounded cursor-move shadow-sm">
+                {{ player.fullName }}
+            </div>
+            }
+        </section>
     }
 </div>

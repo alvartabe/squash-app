@@ -5,18 +5,12 @@ import { Observable } from 'rxjs';
 
 export interface TournamentStateData {
     selectedPlayerKeys: string[];
-    groups: Array<{
-        name: string;
-        playerKeys: string[];
-    }>;
+    groupCount: number;
+    groups: Array<{ name: string; playerKeys: string[] }>;
 }
 
-const DEFAULT_GROUPS = [
-    { name: 'Grupo 1', playerKeys: [] as string[] },
-    { name: 'Grupo 2', playerKeys: [] as string[] },
-];
-
 const STORAGE_KEY = 'tournament-state';
+const DEFAULT_GROUP_COUNT = 2;
 
 @Injectable({ providedIn: 'root' })
 export class TournamentService {
@@ -24,12 +18,23 @@ export class TournamentService {
 
     constructor(private storage: StorageService) {
         const saved = this.storage.get<TournamentStateData>(STORAGE_KEY);
+        const groupCount = saved?.groupCount ?? DEFAULT_GROUP_COUNT;
+        const groups =
+            saved?.groups ??
+            Array.from({ length: groupCount }, (_, i) => ({
+                name: `Grupo ${i + 1}`,
+                playerKeys: saved?.groups?.[i]?.playerKeys ?? [],
+            }));
+
         this.state = new State<TournamentStateData>({
             selectedPlayerKeys: saved?.selectedPlayerKeys ?? [],
-            groups: saved?.groups ?? DEFAULT_GROUPS,
+            groupCount,
+            groups,
         });
 
-        this.state.stateChanges().subscribe((data) => this.storage.set(STORAGE_KEY, data));
+        this.state.stateChanges().subscribe((data) => {
+            this.storage.set(STORAGE_KEY, data);
+        });
     }
 
     stateChanges(): Observable<TournamentStateData> {
@@ -43,26 +48,24 @@ export class TournamentService {
     togglePlayer(key: string): void {
         const current = this.getSnapshot().selectedPlayerKeys;
         const index = current.indexOf(key);
-        let updated: string[];
-
-        if (index >= 0) {
-            updated = current.filter((k) => k !== key);
-        } else {
-            updated = [...current, key];
-        }
-
+        const updated = index >= 0 ? current.filter((k) => k !== key) : [...current, key];
         this.state.patch({ selectedPlayerKeys: updated });
     }
 
-    clearPlayers(): void {
-        this.state.patch({ selectedPlayerKeys: [] });
-    }
-
-    setGroups(groups: { name: string; playerKeys: string[] }[]) {
+    setGroups(groups: { name: string; playerKeys: string[] }[]): void {
         this.state.patch({ groups });
     }
 
-    getGroups(): { name: string; playerKeys: string[] }[] {
-        return this.state.getSnapshot().groups;
+    setGroupCount(count: number): void {
+        // adjust groups array length when count changes
+        const { groups, selectedPlayerKeys } = this.getSnapshot();
+        const newGroups = Array.from({ length: count }, (_, i) => {
+            const existing = groups[i];
+            return {
+                name: existing?.name ?? `Grupo ${i + 1}`,
+                playerKeys: existing?.playerKeys.filter((key) => selectedPlayerKeys.includes(key)) ?? [],
+            };
+        });
+        this.state.patch({ groupCount: count, groups: newGroups });
     }
 }
