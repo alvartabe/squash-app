@@ -17,6 +17,7 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.14",
+    "@angular/cdk": "^19.2.11",
     "@muziehdesign/angularcore": "^19.2.8-next.509",
     "@muziehdesign/components": "^19.2.8-beta.2499",
     "@muziehdesign/forms": "^19.2.8-beta.943",

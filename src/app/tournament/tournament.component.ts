@@ -1,5 +1,5 @@
 // tournament.component.ts
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd, RouterModule, ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
@@ -9,21 +9,26 @@ import { filter } from 'rxjs/operators';
     imports: [RouterModule],
     templateUrl: './tournament.component.html',
 })
-export class TournamentComponent {
+export class TournamentComponent implements OnInit {
     steps = [
-        { path: 'create-players', label: 'Agregar jugadores' },
-        { path: 'create-groups', label: 'Crear grupos' },
+        { path: 'create-players', label: 'Jugadores' },
+        { path: 'create-groups', label: 'Grupos' },
         { path: 'config', label: 'Reglas' },
         { path: 'start', label: 'Inicio' },
     ];
-
     currentStepIndex = 0;
 
-    constructor(private router: Router, private route: ActivatedRoute) {
-        this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe(() => {
-            const last = this.router.url.split('/').pop()!;
-            this.currentStepIndex = this.steps.findIndex((s) => s.path === last);
-        });
+    constructor(private router: Router, private route: ActivatedRoute) {}
+
+    ngOnInit() {
+        this.updateCurrentStep();
+        this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe(() => this.updateCurrentStep());
+    }
+
+    private updateCurrentStep() {
+        const last = this.router.url.split('/').pop()!;
+        const idx = this.steps.findIndex((s) => s.path === last);
+        this.currentStepIndex = idx >= 0 ? idx : 0;
     }
 
     prevStep() {

@@ -5,7 +5,16 @@ import { Observable } from 'rxjs';
 
 export interface TournamentStateData {
     selectedPlayerKeys: string[];
+    groups: Array<{
+        name: string;
+        playerKeys: string[];
+    }>;
 }
+
+const DEFAULT_GROUPS = [
+    { name: 'Grupo 1', playerKeys: [] as string[] },
+    { name: 'Grupo 2', playerKeys: [] as string[] },
+];
 
 const STORAGE_KEY = 'tournament-state';
 
@@ -17,11 +26,10 @@ export class TournamentService {
         const saved = this.storage.get<TournamentStateData>(STORAGE_KEY);
         this.state = new State<TournamentStateData>({
             selectedPlayerKeys: saved?.selectedPlayerKeys ?? [],
+            groups: saved?.groups ?? DEFAULT_GROUPS,
         });
 
-        this.state.stateChanges().subscribe((data) => {
-            this.storage.set(STORAGE_KEY, data);
-        });
+        this.state.stateChanges().subscribe((data) => this.storage.set(STORAGE_KEY, data));
     }
 
     stateChanges(): Observable<TournamentStateData> {
@@ -48,5 +56,13 @@ export class TournamentService {
 
     clearPlayers(): void {
         this.state.patch({ selectedPlayerKeys: [] });
+    }
+
+    setGroups(groups: { name: string; playerKeys: string[] }[]) {
+        this.state.patch({ groups });
+    }
+
+    getGroups(): { name: string; playerKeys: string[] }[] {
+        return this.state.getSnapshot().groups;
     }
 }
