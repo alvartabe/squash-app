@@ -2,15 +2,18 @@ import { Injectable } from '@angular/core';
 import { State } from '@muziehdesign/angularcore';
 import { StorageService } from './storage.service';
 import { Observable } from 'rxjs';
+import { TournamentFormat } from '../models/tournament-format.enum';
 
 export interface TournamentStateData {
     selectedPlayerKeys: string[];
     groupCount: number;
     groups: Array<{ name: string; playerKeys: string[] }>;
+    format: TournamentFormat;
 }
 
 const STORAGE_KEY = 'tournament-state';
 const DEFAULT_GROUP_COUNT = 2;
+const DEFAULT_FORMAT = TournamentFormat.BestOf5To11;
 
 @Injectable({ providedIn: 'root' })
 export class TournamentService {
@@ -19,6 +22,7 @@ export class TournamentService {
     constructor(private storage: StorageService) {
         const saved = this.storage.get<TournamentStateData>(STORAGE_KEY);
         const groupCount = saved?.groupCount ?? DEFAULT_GROUP_COUNT;
+        const format = saved?.format ?? DEFAULT_FORMAT;
         const groups =
             saved?.groups ??
             Array.from({ length: groupCount }, (_, i) => ({
@@ -30,6 +34,7 @@ export class TournamentService {
             selectedPlayerKeys: saved?.selectedPlayerKeys ?? [],
             groupCount,
             groups,
+            format,
         });
 
         this.state.stateChanges().subscribe((data) => {
@@ -47,17 +52,11 @@ export class TournamentService {
 
     togglePlayer(key: string): void {
         const current = this.getSnapshot().selectedPlayerKeys;
-        const index = current.indexOf(key);
-        const updated = index >= 0 ? current.filter((k) => k !== key) : [...current, key];
+        const updated = current.includes(key) ? current.filter((k) => k !== key) : [...current, key];
         this.state.patch({ selectedPlayerKeys: updated });
     }
 
-    setGroups(groups: { name: string; playerKeys: string[] }[]): void {
-        this.state.patch({ groups });
-    }
-
     setGroupCount(count: number): void {
-        // adjust groups array length when count changes
         const { groups, selectedPlayerKeys } = this.getSnapshot();
         const newGroups = Array.from({ length: count }, (_, i) => {
             const existing = groups[i];
@@ -67,5 +66,13 @@ export class TournamentService {
             };
         });
         this.state.patch({ groupCount: count, groups: newGroups });
+    }
+
+    setGroups(groups: { name: string; playerKeys: string[] }[]): void {
+        this.state.patch({ groups });
+    }
+
+    setFormat(format: TournamentFormat): void {
+        this.state.patch({ format });
     }
 }
